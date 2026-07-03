@@ -1,8 +1,8 @@
 ---
 title: Art of Strokes
 emoji: 🎨
-colorFrom: '#0a0a0a'
-colorTo: '#f5dbb1'
+colorFrom: gray
+colorTo: yellow
 sdk: static
 pinned: false
 ---
