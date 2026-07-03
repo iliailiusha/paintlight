@@ -1,8 +1,1 @@
 ﻿
-3
-game.html:212
- Uncaught TypeError: Cannot set properties of null (setting 'y')
-    at resetGame (game.html:212:432)
-    at HTMLButtonElement.<anonymous> (game.html:347:69)
-resetGame	@	game.html:212
-(anonymous)	@	game.html:347
