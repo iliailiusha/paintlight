@@ -264,7 +264,7 @@
         state=S.MODEL;
         model = await faceLandmarksDetection.load(
           faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh,
-          {maxFaces:1,refineLandmarks:true}
+          {runtime:'tfjs',maxFaces:1,refineLandmarks:true}
         );
         loadCalib();
         state=S.READY;initialized=true;
