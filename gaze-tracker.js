@@ -18,14 +18,8 @@
   const FR = 60, KEY = 'pl_gaze_calib', CAM_W=320, CAM_H=240;
   const SA=0.08, FA=0.35, TH=40;
 
-  // ── Status bar ──
-  function showStatus(t){statusText=t;const e=document.getElementById('gazeStatus');if(e)e.textContent=t}
-  function ensureStatus(){
-    if(document.getElementById('gazeStatus'))return;
-    const e=Object.assign(document.createElement('div'),{id:'gazeStatus'});
-    e.style.cssText='position:fixed;bottom:8px;left:8px;z-index:99999;font:10px monospace;color:rgba(255,240,180,0.5);background:rgba(0,0,0,0.6);padding:3px 8px;pointer-events:none;border-radius:2px';
-    document.body.appendChild(e);
-  }
+  // ── Status bar (disabled) ──
+  function showStatus(t){}
 
   // ── Dynamic script loader ──
   function loadScript(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>no(new Error('Failed to load '+src));document.head.appendChild(s)})}
@@ -248,7 +242,7 @@
       if(initialized)return;
       if(initStarted)return;
       initStarted=true;
-      state=S.LOADING;ensureStatus();showStatus('Загрузка модели...');
+      state=S.LOADING;showStatus('Загрузка модели...');
       try{
         await loadDeps();
         showStatus('Открытие камеры...');
@@ -266,15 +260,7 @@
         setTimeout(()=>showStatus(''),2000);
         detectLoop();
 
-        // show calibration button
-        const btn=document.createElement('div');
-        btn.id='gazeCalibBtn';
-        btn.textContent='◉ Калибровка';
-        btn.style.cssText='position:fixed;bottom:8px;right:8px;z-index:99997;font:10px Inter,sans-serif;color:rgba(255,240,180,0.5);background:rgba(0,0,0,0.6);padding:4px 10px;cursor:pointer;border-radius:2px;letter-spacing:0.5px;transition:color .2s';
-        btn.onmouseover=()=>btn.style.color='rgba(255,240,180,0.9)';
-        btn.onmouseout=()=>btn.style.color='rgba(255,240,180,0.5)';
-        btn.onclick=()=>GazeTracker.calibrate();
-        document.body.appendChild(btn);
+
 
       }catch(e){
         state=S.ERROR;
@@ -295,10 +281,7 @@
       active=false;initialized=false;initStarted=false;
       gazeX=null;gazeY=null;sX=null;sY=null;
       state=S.IDLE;
-      const s=document.getElementById('gazeStatus');
-      if(s&&s.parentNode)s.parentNode.removeChild(s);
-      const b=document.getElementById('gazeCalibBtn');
-      if(b&&b.parentNode)b.parentNode.removeChild(b);
+
     },
     isActive(){return active&&initialized&&state===S.READY},
     getGaze(){return active?{x:gazeX,y:gazeY}:null},

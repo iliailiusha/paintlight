@@ -158,12 +158,22 @@ nav {
 .mobile-menu a{color:rgba(255,255,255,0.7);text-decoration:none;font-size:1.1rem;letter-spacing:2.5px;text-transform:uppercase;transition:color .4s}
 .mobile-menu a:hover{color:rgba(255,255,255,0.95)}
 @media (max-width: 768px) {
-    nav { padding: 1.5rem; }
+    nav { padding: 1.2rem 1.5rem; }
     .nav-links { display: none; }
     .hamburger { display: flex; }
-    .btn-group { flex-direction: column; align-items: center; }
-    .hero h1 { font-size: 2.5rem; }
-    .scroll-indicator { bottom: 1.5rem; left: 50%; transform: translateX(-50%); }
+    .btn-group { flex-direction: column; align-items: center; width: 100%; max-width: 300px; }
+    .btn { width: 100%; padding: 0.9rem 1.5rem; font-size: 0.8rem; }
+    .hero h1 { font-size: clamp(2rem, 10vw, 2.5rem); }
+    .hero p { font-size: 0.9rem; padding: 0 1rem; }
+    .scroll-indicator { bottom: 1rem; }
+    .hero-subtitle { font-size: 0.7rem; }
+    .logo { font-size: 1.2rem; }
+    .hero { padding: 0 1rem; }
+    #cursorGlow, #cursorPoint { display: none; }
+    body { cursor: auto; }
+    .btn { cursor: pointer; }
+    .nav-links a, .mobile-menu a, #trailMenu button, #clearAllBtn { cursor: pointer; }
+    #pickTriangle { display: none; }
 }
 </style>
 </head>
@@ -295,7 +305,7 @@ function undo(){if(!undoStack.length)return;const u=undoStack.pop();savedTrails=
 document.addEventListener('mousedown',()=>mouseDown=true);
 document.addEventListener('mouseup',e=>{mouseDown=false;if(e.button!==0||e.target.closest('a,button,.btn,.hamburger,#deleteTrailBtn,#trailMenu,#clearAllBtn,#pickTriangle'))return;if(trail.length>4){pushUndo();savedTrails.push({id:trailIdCounter++,points:trail.map(p=>({x:p.x,y:p.y,op:p.op,sz:p.sz})),createdAt:Date.now()});syncStorage();const st=savedTrails[savedTrails.length-1];const pts=st.points;if(pts.length>3)for(let i=0;i<pts.length-3;i++){const p=pts[i+1],ax=(pts[i].x+pts[i+1].x+pts[i+2].x+pts[i+3].x)/4,ay=(pts[i].y+pts[i+1].y+pts[i+2].y+pts[i+3].y)/4,alpha=0.35*(0.4+0.6*p.op);if(alpha>0.01)drawStroke(sctx,pts[i],pts[i+1],pts[i+2],pts[i+3],p.sz*0.9,alpha)};trail.length=0}});
 document.addEventListener('touchend',e=>{mouseDown=false;if(e.target.closest('#trailMenu,#deleteTrailBtn,#clearAllBtn,#hamburger,a,button'))return;if(trail.length>4){pushUndo();savedTrails.push({id:trailIdCounter++,points:trail.map(p=>({x:p.x,y:p.y,op:p.op,sz:p.sz})),createdAt:Date.now()});syncStorage();trail.length=0}});
-let _debugTimer;window.addEventListener('keydown',e=>{if(e.code!=='KeyD')return;clearTimeout(_debugTimer);const el=document.getElementById('debugInfo')||Object.assign(document.createElement('div'),{id:'debugInfo'});el.style.cssText='position:fixed;bottom:10px;left:10px;z-index:999;color:#ffc;font-size:12px;font-family:monospace;background:rgba(0,0,0,0.8);padding:8px;border:1px solid rgba(255,255,255,0.15)';el.textContent='mDown:'+mouseDown+' trail:'+trail.length+' saved:'+savedTrails.length+' lastMouseUpTarget:'+(lastMouseUpTarget||'?');if(!el.parentNode)document.body.appendChild(el);_debugTimer=setTimeout(()=>el.remove(),5000)});window.addEventListener('mouseup',e=>{lastMouseUpTarget=e.target.tagName+'.'+(e.target.className||'')});
+
 window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.code==='KeyZ'){e.preventDefault();undo()}});
 redrawAllSaved();
 

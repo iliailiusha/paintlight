@@ -76,7 +76,7 @@ main .btn{animation-delay:.5s}
 .mobile-menu.active{display:flex}
 .mobile-menu a{color:rgba(255,255,255,0.7);text-decoration:none;font-size:1.1rem;letter-spacing:2.5px;text-transform:uppercase;transition:color .4s}
 .mobile-menu a:hover{color:rgba(255,255,255,0.95)}
-@media(max-width:768px){nav{padding:1.5rem}.nav-links{display:none}.hamburger{display:flex}}
+@media(max-width:768px){nav{padding:1.2rem 1.5rem}.nav-links{display:none}.hamburger{display:flex}.page-title{font-size:clamp(1.5rem,7vw,2rem)}.page-desc{font-size:0.85rem;padding:0 1rem}.contact-info{font-size:0.8rem;padding:0 1rem}main{padding:4rem 1rem 2rem}#cursorGlow,#cursorPoint{display:none}body{cursor:auto}.btn{cursor:pointer}#pickTriangle{display:none}}
 </style>
 </head>
 <body>
@@ -171,7 +171,7 @@ document.addEventListener('click',function(e){if(selectedSet.size>0&&!e.target.c
 document.addEventListener('mousedown',()=>mouseDown=true);
 document.addEventListener('mouseup',e=>{mouseDown=false;if(e.button!==0||e.target.closest('a,button,.btn,.hamburger,#deleteTrailBtn,#trailMenu,#clearAllBtn,#pickTriangle'))return;if(trail.length>4){pushUndo();saved.push({id:idc++,points:trail.map(p=>({x:p.x,y:p.y,op:p.op,sz:p.sz})),createdAt:Date.now()});syncStorage();const st=saved[saved.length-1];const pts=st.points;if(pts.length>3)for(let i=0;i<pts.length-3;i++){const p=pts[i+1],ax=(pts[i].x+pts[i+1].x+pts[i+2].x+pts[i+3].x)/4,ay=(pts[i].y+pts[i+1].y+pts[i+2].y+pts[i+3].y)/4,alpha=0.35*(0.4+0.6*p.op);if(alpha>0.01)ds(sctx,pts[i],pts[i+1],pts[i+2],pts[i+3],p.sz*0.9,alpha)};trail.length=0}});
 document.addEventListener('touchend',e=>{mouseDown=false;if(e.target.closest('#trailMenu,#deleteTrailBtn,#shareTrailBtn,#clearAllBtn,#hamburger,a,button,#pickTriangle'))return;if(trail.length>4){pushUndo();saved.push({id:idc++,points:trail.map(p=>({x:p.x,y:p.y,op:p.op,sz:p.sz})),createdAt:Date.now()});syncStorage();trail.length=0}});
-let _debugTimer;window.addEventListener('keydown',e=>{if(e.code!=='KeyD')return;clearTimeout(_debugTimer);const el=document.getElementById('debugInfo')||Object.assign(document.createElement('div'),{id:'debugInfo'});el.style.cssText='position:fixed;bottom:10px;left:10px;z-index:999;color:#ffc;font-size:12px;font-family:monospace;background:rgba(0,0,0,0.8);padding:8px;border:1px solid rgba(255,255,255,0.15)';el.textContent='mDown:'+mouseDown+' trail:'+trail.length+' saved:'+saved.length+' target:'+(lastMouseUpTarget||'?');if(!el.parentNode)document.body.appendChild(el);_debugTimer=setTimeout(()=>el.remove(),5000)});window.addEventListener('mouseup',e=>{lastMouseUpTarget=e.target.tagName+'.'+(e.target.className||'')});
+
 window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.code==='KeyZ'){e.preventDefault();undo()}});
 redrawAllSaved();
 const tm=document.getElementById('trailMenu'),db=document.getElementById('deleteTrailBtn'),sb=document.getElementById('shareTrailBtn');let mid=null,mis=false;
