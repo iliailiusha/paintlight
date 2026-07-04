@@ -68,7 +68,7 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;user-select:no
 #pageTransition.active{opacity:1;pointer-events:auto}
 .game-hud,.game-back{opacity:0;animation:fadeIn .4s ease .15s forwards}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:768px){.game-hud .controls-hint{display:none}}
+@media(max-width:768px){.game-hud{top:1rem;right:1rem}.game-hud .controls-hint{display:none}.game-back{top:1rem;left:1rem;padding:0.3rem 0.8rem;font-size:0.55rem}.start-overlay h1{font-size:clamp(1.8rem,8vw,2.5rem)}.start-overlay{padding:1rem}.start-overlay .subtitle{font-size:0.65rem}.gameover-overlay h2,.victory-overlay h2{font-size:2rem}.game-hud .stat{font-size:0.6rem}.game-hud .stat span{font-size:0.9rem}.btn{padding:0.7rem 1.5rem;font-size:0.75rem}.gameover-overlay .final-score,.victory-overlay .final-score{font-size:0.8rem}#gameCanvas{cursor:auto}}
 </style>
 </head>
 <body>
@@ -193,7 +193,7 @@ function getC(){
 }
 // ── GAME ──
 const KEYS={};document.addEventListener('keydown',e=>{KEYS[e.key.toLowerCase()]=true;if(e.key.toLowerCase()!=='d')e.preventDefault()});document.addEventListener('keyup',e=>{KEYS[e.key.toLowerCase()]=false});
-let _debugTimer;window.addEventListener('keydown',e=>{if(e.key!=='d'&&e.key!=='D')return;clearTimeout(_debugTimer);const el=document.getElementById('debugInfo')||Object.assign(document.createElement('div'),{id:'debugInfo'});el.style.cssText='position:fixed;bottom:10px;left:10px;z-index:999;color:#ffc;font-size:12px;font-family:monospace;background:rgba(0,0,0,0.8);padding:8px;border:1px solid rgba(255,255,255,0.15)';el.textContent='mouseDown:'+mouseDown+' scrollSpeed:'+scrollSpeed.toFixed(2)+' level:'+(level+1)+' obstacles:'+obstacles.length+' platforms:'+platforms.length+' score:'+score+' boy.vy:'+boy.vy.toFixed(2)+' boy.onGround:'+boy.onGround+' gameRun:'+gameRun;if(!el.parentNode)document.body.appendChild(el);_debugTimer=setTimeout(()=>el.remove(),5000)});
+
 let gameRun=false,gameStarted=false,score=0,scrollSpeed=2.5,gameTime=0,obstacleTimer=0,platformTimer=0,frameId=null,isDying=false,deathTimer=0,coins=0,hp=100,hpMax=100,hpTimer=0,invulnTimer=0;
 let level=0,levelStartTime=0,chest=null,victory=false,inShop=false;
 // shop door — screen-fixed on the left
