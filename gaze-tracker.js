@@ -241,6 +241,7 @@
     async start(){
       if(initialized)return;
       if(initStarted)return;
+      if('ontouchstart' in window && !/Mac|Win/i.test(navigator.platform))return;
       initStarted=true;
       state=S.LOADING;showStatus('Загрузка модели...');
       try{
