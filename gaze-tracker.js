@@ -5,7 +5,7 @@
   const S = { IDLE:0, LOADING:1, CAMERA:2, MODEL:3, READY:4, ERROR:-1, NO_CAM:-2 };
   let state = S.IDLE, model = null, video = null, stream = null, animId = null;
   let gazeX = null, gazeY = null, active = false;
-  let sX = null, sY = null, pvX = null, pvY = null, noFaceFrames = 0, fDetected = false;
+  let sX = null, sY = null, pvX = null, pvY = null, noFaceFrames = 0;
   let calibSamples=[],calibPtIdx=-1,calibFrames=[],calibActive=false,calibOverlay=null;
   let statusText='',initialized=false,initStarted=false;
   const W=()=>window.innerWidth, H=()=>window.innerHeight;
@@ -21,15 +21,26 @@
   // ── Status bar (disabled) ──
   function showStatus(t){}
 
-  // ── Dynamic script loader ──
-  function loadScript(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>no(new Error('Failed to load '+src));document.head.appendChild(s)})}
+  // ── Dynamic script loader with CDN fallbacks (jsdelivr → unpkg) ──
+  const CDNS = [
+    (p)=>`https://cdn.jsdelivr.net/npm/${p}`,
+    (p)=>`https://unpkg.com/${p}`
+  ];
+  async function loadScript(srcs){
+    for(const build of srcs){
+      for(const cdn of CDNS){
+        try{const s=document.createElement('script');s.src=cdn(build);await new Promise((ok,no)=>{s.onload=ok;s.onerror=no;document.head.appendChild(s)});return}catch(e){}
+      }
+    }
+    throw new Error('Failed to load '+srcs[0]);
+  }
 
   // ── TensorFlow + FaceMesh ──
   async function loadDeps(){
     if(typeof tf === 'undefined')
-      try{await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.21.0/dist/tf.min.js')}catch(e){showStatus('TF load fail');throw e}
+      await loadScript(['@tensorflow/tfjs@4.21.0/dist/tf.min.js','@tensorflow/tfjs@4.21.0/dist/tf.min.js']);
     if(typeof faceLandmarksDetection === 'undefined')
-      try{await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection@1.0.6/dist/face-landmarks-detection.min.js')}catch(e){showStatus('FaceMesh load fail');throw e}
+      await loadScript(['@tensorflow-models/face-landmarks-detection@1.0.6/dist/face-landmarks-detection.min.js','@tensorflow-models/face-landmarks-detection@1.0.6/dist/face-landmarks-detection.min.js']);
   }
 
   // ── Camera ──
@@ -119,7 +130,7 @@
       if(pose){
         const g=extractGaze(kp,pose);
         if(g){
-          fDetected=true;noFaceFrames=0;
+          noFaceFrames=0;
           let p=null;
           if(calibSamples&&calibSamples.length>=3)p=projCalib(g.ix,g.iy,g.yaw,g.pitch);
           if(!p)p=projRaw(g.ix,g.iy,g.yaw,g.pitch,g.fs);
